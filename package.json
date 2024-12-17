@@ -1,0 +1,44 @@
+{
+  "name": "gym-management-app",
+  "version": "1.0.0",
+  "description": "A backend for gym management project (personal)",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "prestart": "npm run build",
+    "start": "node ./dist/index.js",
+    "predev": "npm run build",
+    "dev": "concurrently \"tsc -w\" \"nodemon ./dist/index.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shani Khan",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.0",
+    "@types/mongoose": "^5.11.97",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.0",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.7",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
+    "concurrently": "^9.1.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.2",
+    "multer": "^1.4.5-lts.1",
+    "rimraf": "^6.0.1",
+    "tsconfig-paths": "^4.2.0"
+  }
+}
