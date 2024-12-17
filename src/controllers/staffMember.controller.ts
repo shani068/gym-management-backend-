@@ -33,7 +33,7 @@ const addStaffMember = asyncHandler(async (req: Request, res: Response)=>{
     }
 
     const staffImage = req.file ? await uploadOnCloudinary(req.file?.path) : null;
-    // console.log("staf image" , staffImage);
+    
     if(!staffImage){
         throw new ApiError(400, "Staff image is required");
     }
@@ -48,7 +48,7 @@ const addStaffMember = asyncHandler(async (req: Request, res: Response)=>{
     )
 
     const createdStaffMember = await StaffMember.findById(staffMember?._id)
-    
+
     if(!createdStaffMember){
         throw new ApiError(500, "Failed to create staff member");
     }
