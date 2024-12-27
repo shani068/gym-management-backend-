@@ -44,3 +44,18 @@ export interface IStaffMember{
     phone: string;
     email: string;
 }
+
+export interface IMember extends IStaffMember{
+    group: Types.ObjectId;
+    weight: number;
+    height: number;
+    chest: number;
+    waist: number;
+    thigh: number;
+    arms: number;
+    fat: number;
+    staffMember: Types.ObjectId;
+    memberShip: Types.ObjectId;
+    memberShipValidFrom: Date;
+    memberShipValidTo: Date;
+}

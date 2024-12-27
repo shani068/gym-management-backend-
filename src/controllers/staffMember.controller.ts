@@ -58,5 +58,80 @@ const addStaffMember = asyncHandler(async (req: Request, res: Response)=>{
     )
 })
 
+const updateStaffMember = asyncHandler(async (req: Request, res: Response)=>{
+    const { id } = req.params;
+    const {  firstName, lastName, gender, dateOfBirth, roleName, specializationName, address, city, state, phone, email } = req.body;
 
-export { addStaffMember }
+    if(!id){
+        throw new ApiError(400, "id is required");
+    }
+
+    if([firstName, lastName, gender, dateOfBirth, roleName, specializationName, address, city, state, phone, email].some(field => field?.trim() == "")){
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const existingStaffMember = await StaffMember.findOne(
+        {
+            email,
+            _id: { $ne: id }
+        }
+    )
+    if(existingStaffMember){
+        throw new ApiError(400, "Staff member already exists");
+    }
+
+    const role = await Role.findOne({ name: roleName });
+    if(!role){
+        throw new ApiError(404, "Role not found");
+    }
+    const specialization = await Specialization.findOne({ name: specializationName });
+    if(!specialization){
+        throw new ApiError(404, "Specialization not found");
+    }
+
+    const staffImage = req.file ? await uploadOnCloudinary(req.file?.path) : null;
+    if(!staffImage){
+        throw new ApiError(400, "Staff image is required");
+    }
+
+    const updatedStaffMember = await StaffMember.findByIdAndUpdate(
+        id,
+        {
+            firstName, lastName, gender, dateOfBirth, address, city, state, phone, email,
+            role: role._id,
+            specialization: specialization._id,
+            image: staffImage?.url
+        },
+        { new: true }
+    )
+    if(!updatedStaffMember){
+        throw new ApiError(500, "Failed to update staff member");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, "Staff member updated successfully", updatedStaffMember)
+    )
+})
+
+const deleteStaffMember = asyncHandler(async (req: Request, res: Response)=>{
+    const { id } = req.params;
+
+    if(!id){
+        throw new ApiError(400, "Staff member id is required");
+    }
+
+    const staffMember = await StaffMember.findById(id);
+    if(!staffMember){
+        throw new ApiError(404, "Staff member not found");
+    }
+
+    const deletedStaffMember = await StaffMember.findByIdAndDelete(id);
+    if(!deletedStaffMember){
+        throw new ApiError(500, "Failed to delete staff member");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, "Staff member deleted successfully", deletedStaffMember)
+    )
+})
+export { addStaffMember, updateStaffMember, deleteStaffMember }
