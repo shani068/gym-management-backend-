@@ -29,7 +29,7 @@ const addStaffMember = asyncHandler(async (req: Request, res: Response)=>{
 
     const specialization = await Specialization.findOne({ name: specializationName });
     if(!specialization){
-        throw new ApiError(400, "Specialization not found");
+        throw new ApiError(400, "Specialization not found");    
     }
 
     const staffImage = req.file ? await uploadOnCloudinary(req.file?.path) : null;
@@ -55,6 +55,13 @@ const addStaffMember = asyncHandler(async (req: Request, res: Response)=>{
 
     return res.status(201).json(
         new ApiResponse(200, "Staff member created successfully", createdStaffMember)
+    )
+})
+
+const getStaffMemberList = asyncHandler(async(req: Request, res: Response)=>{
+    const staffMembers = await StaffMember.find({}).populate("role", "name").select("-specialization -address -city -state -dateOfBirth -gender")
+    return res.status(200).json(
+        new ApiResponse(200, "Staff member list fetched successfully", staffMembers)
     )
 })
 
@@ -134,4 +141,4 @@ const deleteStaffMember = asyncHandler(async (req: Request, res: Response)=>{
         new ApiResponse(200, "Staff member deleted successfully", deletedStaffMember)
     )
 })
-export { addStaffMember, updateStaffMember, deleteStaffMember }
+export { addStaffMember, updateStaffMember, deleteStaffMember, getStaffMemberList }

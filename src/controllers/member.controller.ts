@@ -74,6 +74,17 @@ const addMember = asyncHandler(async (req: Request, res: Response) =>{
     )
 })
 
+const getAllMembers = asyncHandler(async (req: Request, res: Response) =>{
+    const members = await Member.find({},{gender:0,dateOfBirth:0,group:0,staffMember:0,memberShip:0});
+    if(!members || members.length === 0){
+        throw new ApiError(404, "No members found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, "Members fetched successfully", members)
+    )
+})
+
 const updateMember = asyncHandler(async (req: Request, res: Response) =>{
     const { id } = req.params;
     const {  image, firstName, lastName, gender, dateOfBirth, groupName, address, city, state, phone, email, weight, height, chest, waist, thigh, arms, fat, staffMemberName, memberShipName, memberShipValidFrom, memberShipValidTo } = req.body;
@@ -169,4 +180,4 @@ const deleteMember = asyncHandler(async (req: Request, res: Response)=>{
     )
 })
 
-export { addMember, updateMember, deleteMember }
+export { addMember, getAllMembers, updateMember, deleteMember }
