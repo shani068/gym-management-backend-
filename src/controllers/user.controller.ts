@@ -9,7 +9,13 @@ const options = {
     httpOnly: true,
     secure: true,
 }
-
+interface IUser {
+    username: string;
+    email: string;
+    phone: string;
+    address: string;
+    password: string;
+}
 
 const generateAccessAndRefreshToken = async (userId:string) => {
     try {
@@ -115,4 +121,64 @@ const logoutUser = asyncHandler(async (req: Request, res: Response)=>{
         )
     )
 })
-export { registerUser, loginUser, logoutUser }
+
+const getUserDetailsById = asyncHandler(async (req: Request, res: Response) => {
+    const id = req.user?._id;
+    if(!id){
+        throw new ApiError(400, "User Id is required")
+    }
+
+    const user = await User.findById(id).select("-password -refreshToken");
+
+    if(!user){
+        throw new ApiError(404, "User not found")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            "User details fetched successfully",
+            user
+        )
+    )
+} )
+
+const updateProfile = asyncHandler(async (req: Request, res: Response) => {
+    const id = req.user?._id;
+    const { username, email, phone, address, password} = req.body;
+    if(!id){
+        throw new ApiError(400, "User Id is required")
+    }
+
+    let updateData: Partial<IUser> = {};
+
+    if(username !== undefined) updateData.username = username;
+    if(email !== undefined) updateData.email = email;
+    if(phone !== undefined) updateData.phone = phone;
+    if(address !== undefined) updateData.address = address;
+
+    if(password && password.trim() !== ""){
+        updateData.password = password;
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+            $set: updateData
+        },
+        {
+            new: true
+        }
+    )
+    if(!updatedUser){
+        throw new ApiError(500, "Failed to update user");
+    }
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            "User updated successfully",
+        )
+    )
+})
+
+
+export { registerUser, loginUser, logoutUser, updateProfile, getUserDetailsById }
