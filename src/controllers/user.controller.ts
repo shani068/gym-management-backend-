@@ -150,32 +150,26 @@ const updateProfile = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(400, "User Id is required")
     }
 
-    let updateData: Partial<IUser> = {};
+    const user = await User.findById(id);
+    if(!user){
+        throw new ApiError(404, "User not found")
+    }
 
-    if(username !== undefined) updateData.username = username;
-    if(email !== undefined) updateData.email = email;
-    if(phone !== undefined) updateData.phone = phone;
-    if(address !== undefined) updateData.address = address;
+    if(username !== undefined) user.username = username;
+    if(email !== undefined) user.email = email;
+    if(phone !== undefined) user.phone = phone;
+    if(address !== undefined) user.address = address;
 
     if(password && password.trim() !== ""){
-        updateData.password = password;
+        user.password = password;
     }
-    const updatedUser = await User.findByIdAndUpdate(
-        id,
-        {
-            $set: updateData
-        },
-        {
-            new: true
-        }
-    )
-    if(!updatedUser){
-        throw new ApiError(500, "Failed to update user");
-    }
+    
+    await user.save({ validateModifiedOnly: true })
+
     return res.status(200).json(
         new ApiResponse(
             200,
-            "User updated successfully",
+            "Profile updated successfully",
         )
     )
 })

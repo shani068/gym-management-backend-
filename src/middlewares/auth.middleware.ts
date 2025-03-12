@@ -21,7 +21,7 @@ export const verifyJwt = asyncHandler(async (req: Request, _: Response, next: Ne
             throw new ApiError(500, "Access token secret is not set")
         }
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as decodedToken;
-        console.log("docodedToken ", decodedToken)
+        // console.log("docodedToken ", decodedToken)
         const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
         if(!user){
             throw new ApiError(401, "Invalid Access Token")

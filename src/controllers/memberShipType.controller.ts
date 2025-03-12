@@ -30,7 +30,7 @@ const addMembershipCategory = asyncHandler(async (req: Request, res: Response) =
     }
 
     return res.status(200).json(
-        new ApiResponse(200, "Category created successfully", createdCategory)
+        new ApiResponse(200, "Category created successfully")
     )
 })
 
