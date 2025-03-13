@@ -95,6 +95,16 @@ const getMemberShipCategoryById = asyncHandler(async (req: Request, res: Respons
     );
 });
 
+const getMemberShipDetailById = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const memberShip = await MemberShip.findById(id).populate("category");
+    if (!memberShip) {
+        throw new ApiError(404, "Membership not found");
+    }
+    return res.status(200).json(
+        new ApiResponse(200, "Membership fetched successfully", memberShip)
+    );
+});
 
 const getMemberShipList = asyncHandler(async (req: Request, res: Response) => {
     const memberShipList = await MemberShip.find().populate("category");
@@ -210,4 +220,19 @@ const deleteCategoryById = asyncHandler(async (req: Request, res: Response) => {
     )
 });
 
-export { addMembershipCategory, addMemberShip, getMemberShipAllCategories, getMemberShipList, updateMemberShipCategory, updateMemberShip, getMemberShipCategoryById, deleteCategoryById }
+const deleteMemberShip = asyncHandler(async (req: Request, res: Response) => {
+    const {id} = req.params;
+    console.log("id memberhsip", id)
+    if (!id) {
+        throw new ApiError(400, "Membership id is required");
+    }
+    const deletedMembership = await MemberShip.findByIdAndDelete(id);
+    if (!deletedMembership) {
+        throw new ApiError(500, "Failed to delete membership");
+    }
+    return res.status(200).json(
+        new ApiResponse(200, "Membership deleted successfully")
+    )
+});
+
+export { addMembershipCategory, addMemberShip, getMemberShipAllCategories, getMemberShipList, updateMemberShipCategory, updateMemberShip, getMemberShipCategoryById, deleteCategoryById, deleteMemberShip, getMemberShipDetailById }

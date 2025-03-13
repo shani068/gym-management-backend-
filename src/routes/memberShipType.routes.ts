@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { addMemberShip, addMembershipCategory, deleteCategoryById, getMemberShipAllCategories, getMemberShipCategoryById, getMemberShipList, updateMemberShip, updateMemberShipCategory } from "../controllers/memberShipType.controller";
+import { addMemberShip, addMembershipCategory, deleteCategoryById, deleteMemberShip, getMemberShipAllCategories, getMemberShipCategoryById, getMemberShipDetailById, getMemberShipList, updateMemberShip, updateMemberShipCategory } from "../controllers/memberShipType.controller";
+import { verifyJwt } from "../middlewares/auth.middleware";
 
 
 
@@ -15,6 +16,8 @@ router.route("/add-membership").post(addMemberShip)
 router.route("/update-category/:id").put(updateMemberShipCategory)
 router.route("/update-membership/:id").put(updateMemberShip)
 router.delete("/delete-category/:id", deleteCategoryById)
+router.delete("/delete-memberShip/:id",deleteMemberShip)
+router.get("/memberShip-detail/:id",getMemberShipDetailById)
 
 
 export default router;
