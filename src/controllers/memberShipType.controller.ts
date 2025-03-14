@@ -102,7 +102,7 @@ const getMemberShipDetailById = asyncHandler(async (req: Request, res: Response)
         throw new ApiError(404, "Membership not found");
     }
     return res.status(200).json(
-        new ApiResponse(200, "Membership fetched successfully", memberShip)
+        new ApiResponse(200, "Membership fetched successfully", [memberShip])
     );
 });
 
